@@ -27,3 +27,34 @@ fun <A, B, C> higherAndThen() =
             {x: A -> g(f(x))}
         }
     }
+
+// Exercise 3.7
+// Write a fun function to partially apply a curried function of two arguments to its first argument
+fun <A, B, C> partialA(f: (A) -> (B) -> C, x: A): (B) -> C = f(x)
+
+// Exercise 3.8
+// Write a fun function to partially apply a curried function of two arguments to its second argument
+fun <A, B, C> partialB(f: (A) -> (B) -> C, x: B): (A) -> C = { y -> f(y)(x) }
+
+// Exercise 3.9
+// Convert the following function into a curried function
+// fun <A, B, C, D> func(a: A, b: B, c: C, d: D): String = "$a, $b, $c, $d"
+fun <A, B, C, D> curried() =
+    { a: A ->
+        { b: B ->
+            { c: C ->
+                { d: D ->
+                    "$a, $b, $c, $d"
+                }
+            }
+        }
+    }
+
+// Exercise 3.10
+// Write a function to curry a function of a (A, B) to C
+fun <A, B, C> curry(f: (A, B) -> C) =
+    { a: A ->
+        { b: B ->
+            f(a, b)
+        }
+    }
