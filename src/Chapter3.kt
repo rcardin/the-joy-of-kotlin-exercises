@@ -58,3 +58,12 @@ fun <A, B, C> curry(f: (A, B) -> C) =
             f(a, b)
         }
     }
+
+// Exercise 3.11
+// Write a 'fun' function to swap the arguments of a curried function
+fun <A, B, C> swapArgs(f: (A) -> (B) -> C): (B) -> (A) -> C =
+    { b: B ->
+        { a: A ->
+            f(a)(b)
+        }
+    }
