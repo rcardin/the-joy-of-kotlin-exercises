@@ -28,3 +28,19 @@ fun fibonacci(number: Int): Int {
         }
     return fib(number, 0, 1)
 }
+
+// Exercise 4.4
+// Write a tail-recursive version of the makeString function
+val <T> List<T>.tail: List<T>
+    get() = drop(1)
+val <T> List<T>.head: T
+    get() = first()
+fun <T> makeString(list: List<T>, delim: String): String {
+    tailrec fun makeString_(list: List<T>, acc: String): String =
+        when {
+            list.isEmpty() -> acc
+            acc.isEmpty() -> makeString_(list.tail, "${list.head}")
+            else -> makeString_(list.tail, "$acc$delim${list.head}")
+        }
+    return makeString_(list, "")
+}
