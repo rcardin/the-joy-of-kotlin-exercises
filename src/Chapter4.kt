@@ -44,3 +44,35 @@ fun <T> makeString(list: List<T>, delim: String): String {
         }
     return makeString_(list, "")
 }
+
+// Exercise 4.5
+// Create a generic version of your tail-recursive function that can be used for sum, string, and makeString. Call
+// this function foldLeft, then write sum, string, and makeString in terms of this new function.
+fun <T, U> foldLeft(list: List<T>, z: U, f: (U, T) -> U): U {
+    tailrec fun foldLeft_(list: List<T>, acc: U): U =
+        if (list.isEmpty())
+            acc
+        else
+            foldLeft_(list.tail, f(acc, list.head))
+    return foldLeft_(list, z)
+}
+fun <T> makeStringWithFoldLeft(list: List<T>, delim: String): String {
+    return foldLeft(list, "",
+        {acc, curr ->
+            if (acc.isEmpty())
+                "$curr"
+            else
+                "$acc$delim$curr"
+        }
+    )
+}
+
+// Exercise 4.6
+// Write this abstracted function and call it foldRight. Then write the string function in terms of foldRight
+fun <T, U> foldRight(list: List<T>, z: U, f: (T, U) -> U): U =
+    if (list.isEmpty())
+        z
+    else
+        f(list.head, foldRight(list.tail, z, f))
+
+
