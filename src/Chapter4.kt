@@ -75,4 +75,45 @@ fun <T, U> foldRight(list: List<T>, z: U, f: (T, U) -> U): U =
     else
         f(list.head, foldRight(list.tail, z, f))
 
+// Exercise 4.7
+// Define a reverse function using a fold.
+fun <T> prepend(list: List<T>, elem: T): List<T> = listOf(elem) + list
+fun <T> reverse(list: List<T>): List<T> = foldLeft(list, emptyList(), ::prepend)
 
+// Exercise 4.8
+// Define the reverse function using only the append version of + without resorting to concatenation
+fun <T> prependWithoutListOf(list: List<T>, elem: T): List<T> = foldLeft(list, listOf(elem)) {acc, elm -> acc + elm}
+fun <T> reverseWithoutListOf(list: List<T>) = foldLeft(list, emptyList(), ::prependWithoutListOf)
+
+// Exercise 4.9
+// Write a loop-based implementation of a function that produces a list using a starting value, a limit, and the
+// function x -> x + 1. You’ll call this function range, and it’ll have the following signature:
+//    fun range(start: Int, end: Int): List<Int>
+fun range(start: Int, end: Int): List<Int> {
+    val result: MutableList<Int> = mutableListOf()
+    var index = start
+    while (index < end) {
+        result.add(index)
+        index++
+    }
+    return result
+}
+
+// Exercise 4.10
+// Write a generic version of a range-like function that works for any type and any condition. As the notion of
+// range works only for numbers, let’s call this function unfold and give it the following signature:
+//    fun <T> unfold(seed: T, f: (T) -> T, p: (T) -> Boolean): List<T>
+fun <T> unfold(seed: T, f: (T) -> T, p: (T) -> Boolean): List<T> {
+    val result: MutableList<T> = mutableListOf()
+    var elem = seed
+    while (p(elem)) {
+        result.add(elem)
+        elem = f(elem)
+    }
+    return result
+}
+
+// Exercise 4.11
+// Implement the range function in terms of unfold
+fun rangeUsingUnfold(start: Int, end: Int): List<Int> =
+    unfold(start, { it + 1 }, { it < end })
