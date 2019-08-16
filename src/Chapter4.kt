@@ -117,3 +117,63 @@ fun <T> unfold(seed: T, f: (T) -> T, p: (T) -> Boolean): List<T> {
 // Implement the range function in terms of unfold
 fun rangeUsingUnfold(start: Int, end: Int): List<Int> =
     unfold(start, { it + 1 }, { it < end })
+
+// Exercise 4.12
+// Write a recursive version of range based on the functions you’ve defined in previous sections
+fun rangeUsingPrepend(start: Int, end: Int): List<Int> =
+    if (start == end)
+        listOf()
+    else
+        prepend(rangeUsingPrepend(start + 1, end), start)
+
+// Exercise 4.13
+// Write a recursive version of unfold
+fun <T> recursiveUnfold(seed: T, f: (T) -> T, p: (T) -> Boolean): List<T> =
+    if (p(seed))
+        prepend(recursiveUnfold(f(seed), f, p), seed)
+    else
+        listOf()
+
+// Exercise 4.14
+// Can you make a tail recursive version of this function?
+fun <T> tailRecursiveUnfold(seed: T, f: (T) -> T, p: (T) -> Boolean): List<T> {
+    tailrec fun unfold_(seed: T, acc: List<T>): List<T> =
+        if (p(seed))
+            unfold_(f(seed), acc + seed)
+        else
+            acc
+    return unfold_(seed, listOf())
+}
+
+// Exercise 4.15
+// Write a tail-recursive function taking an integer n as its argument and returning a string representing the values
+// of the Fibonacci numbers from 0 to n, separated by a comma and a space
+fun fibo(number: Int): String {
+    tailrec fun fibo_(acc: List<Int>, /* fib(n-1) */ fib1: Int, /* fib(n-2) */ fib2: Int,
+                      current: Int): List<Int> =
+        when {
+            (current == 0) -> acc
+            (current == 1) -> acc + (fib1 + fib2)
+            else -> fibo_(acc + (fib1 + fib2), fib2, fib1 + fib1, current - 1)
+        }
+
+    val result = fibo_(listOf(), 1, 0, number)
+    return makeString(result, ",")
+}
+
+// Exercise 4.16
+// Define the iterate function that works like unfold, except instead of calling itself recursively until a condition
+// is met, it calls itself a given number of times
+fun <T> iterate(seed: T, f: (T) -> T, n: Int): List<T> {
+    tailrec fun iterate_(seed: T, acc: List<T>, n: Int): List<T> =
+        if (n == 0)
+            iterate_(f(seed), acc + seed, n - 1)
+        else
+            acc
+    return iterate_(seed, listOf(), n)
+}
+
+// Exercise 4.17
+// Define a map function that applies a function (T) -> U to each element of a List<T>, producing a List<U>
+fun <T, U> map(list: List<T>, f: (T) -> U): List<U> =
+    foldLeft(list, listOf()) { acc, elem -> acc + f(elem)}
